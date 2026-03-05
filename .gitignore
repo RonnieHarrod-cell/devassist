@@ -1,3 +1,7 @@
 .env
 venv/
 __pycache__/
+dist
+devassist_cli.egg-info
+test.py
+pyproject.toml

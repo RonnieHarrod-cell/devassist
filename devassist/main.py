@@ -1,7 +1,7 @@
 import argparse
 from rich.console import Console
-from commands import explain_file, refactor_file, generate_function, debug_error
-from ai import chat_with_memory
+from .commands import explain_file, refactor_file, generate_function, debug_error
+from .ai import chat_with_memory
 
 console = Console()
 

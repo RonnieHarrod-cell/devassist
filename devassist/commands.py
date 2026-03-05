@@ -1,4 +1,4 @@
-from ai import chat_with_memory
+from .ai import chat_with_memory
 
 def explain_file(filepath):
     with open(filepath, "r", encoding="utf-8") as f:
