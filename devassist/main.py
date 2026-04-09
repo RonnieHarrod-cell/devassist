@@ -20,6 +20,14 @@ def interactive_chat():
             console.print("[bold magenta]Goodbye![/bold magenta]")
             break
 
+        if user_input.lower() == "commands":
+            console.print("[bold yellow]Available Commands:[/bold yellow]")
+            console.print("- explain [filepath]")
+            console.print("- refactor [filepath]")
+            console.print("- generate [description]")
+            console.print("- debug [error text]")
+            continue
+
         messages.append({"role": "user", "content": user_input})
 
         response = chat_with_memory(messages)

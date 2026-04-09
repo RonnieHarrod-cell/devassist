@@ -18,8 +18,11 @@ def refactor_file(filepath):
 
     messages = [
         {"role": "system", "content": "You are a senior software engineer."},
-        {"role": "user", "content": f"Refactor this code:\n\n{code}"}
+        {"role": "user", "content": f"Refactor this code and only return the code do not add the ```python``` tags:\n\n{code}"}
     ]
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(chat_with_memory(messages))
 
     return chat_with_memory(messages)
 
