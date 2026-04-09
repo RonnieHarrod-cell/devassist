@@ -7,3 +7,5 @@ test.py
 pyproject.toml
 .vscode/
 devassist/pytest.py
+devassist/.pytest_cache/
+devassist/__pycache__/
