@@ -56,7 +56,6 @@ class DevAssist:
                 self.show_commands()
                 continue
 
-            # 🔥 Check if it's a command first
             command_result = self.handle_command(user_input)
 
             if command_result:
@@ -64,7 +63,6 @@ class DevAssist:
                 self.console.print(command_result)
                 continue
 
-            # Otherwise → AI chat
             self.messages.append({"role": "user", "content": user_input})
             response = chat_with_memory(self.messages)
             self.messages.append({"role": "assistant", "content": response})
