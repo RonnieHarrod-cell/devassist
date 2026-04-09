@@ -1,11 +1,11 @@
-from ai import chat_with_memory
+from ai import chat_with_memory, SYSTEM_PROMPT
 
 def explain_file(filepath):
     with open(filepath, "r", encoding="utf-8") as f:
         code = f.read()
 
     messages = [
-        {"role": "system", "content": "You are a senior software engineer."},
+        {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": f"Explain this code:\n\n{code}"}
     ]
 
@@ -17,7 +17,7 @@ def refactor_file(filepath):
         code = f.read()
 
     messages = [
-        {"role": "system", "content": "You are a senior software engineer."},
+        {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": f"Refactor this code and only return the code do not add the ```python``` tags:\n\n{code}"}
     ]
 
@@ -29,7 +29,7 @@ def refactor_file(filepath):
 
 def generate_function(description):
     messages = [
-        {"role": "system", "content": "You are a senior software engineer."},
+        {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": f"Write a clean Python function for: {description}"}
     ]
 
@@ -41,7 +41,7 @@ def debug_error(filepath):
         code = f.read()
 
     messages = [
-        {"role": "system", "content": "You are a senior software engineer."},
+        {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": f"Explain and fix this error and only return the code do not add the ```python``` tags:\n\n{code}"}
     ]
 
