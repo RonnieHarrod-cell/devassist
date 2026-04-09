@@ -1,7 +1,7 @@
 import argparse
 from rich.console import Console
-from .commands import explain_file, refactor_file, generate_function, debug_error
-from .ai import chat_with_memory
+from commands import explain_file, refactor_file, generate_function, debug_error
+from ai import chat_with_memory
 
 console = Console()
 
@@ -17,6 +17,7 @@ def interactive_chat():
         user_input = input("You: ")
 
         if user_input.lower() == "exit":
+            console.print("[bold magenta]Goodbye![/bold magenta]")
             break
 
         messages.append({"role": "user", "content": user_input})
