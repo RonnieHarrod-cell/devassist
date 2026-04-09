@@ -1,13 +1,13 @@
 import argparse
 from rich.console import Console
 from commands import explain_file, refactor_file, generate_function, debug_error
-from ai import chat_with_memory
+from ai import chat_with_memory, SYSTEM_PROMPT
 
 class DevAssist:
     def __init__(self):
         self.console = Console()
         self.messages = [
-            {"role": "system", "content": "You are a senior software engineer."}
+            {"role": "system", "content": SYSTEM_PROMPT}
         ]
 
         # Central command registry
