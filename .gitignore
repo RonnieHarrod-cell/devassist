@@ -5,3 +5,5 @@ dist
 devassist_cli.egg-info
 test.py
 pyproject.toml
+.vscode/
+devassist/pytest.py

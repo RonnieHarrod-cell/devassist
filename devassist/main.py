@@ -3,77 +3,120 @@ from rich.console import Console
 from commands import explain_file, refactor_file, generate_function, debug_error
 from ai import chat_with_memory
 
-console = Console()
+class DevAssist:
+    def __init__(self):
+        self.console = Console()
+        self.messages = [
+            {"role": "system", "content": "You are a senior software engineer."}
+        ]
 
-def interactive_chat():
-    console.print("[bold cyan]DevAssist Interactive Mode[/bold cyan]")
-    console.print("Type'exit' to quit.\n")
+        # Central command registry
+        self.commands = {
+            "explain": explain_file,
+            "refactor": refactor_file,
+            "generate": generate_function,
+            "debug": debug_error,
+        }
 
-    messages = [
-        {"role": "system", "content": "You are a senior software engineer."}
-    ]
+    # ---------------------------
+    # Command Handler
+    # ---------------------------
+    def handle_command(self, user_input):
+        parts = user_input.split(maxsplit=1)
 
-    while True:
-        user_input = input("You: ")
+        if not parts:
+            return None
 
-        if user_input.lower() == "exit":
-            console.print("[bold magenta]Goodbye![/bold magenta]")
-            break
+        cmd = parts[0]
+        arg = parts[1] if len(parts) > 1 else None
 
-        if user_input.lower() == "commands":
-            console.print("[bold yellow]Available Commands:[/bold yellow]")
-            console.print("- explain [filepath]")
-            console.print("- refactor [filepath]")
-            console.print("- generate [description]")
-            console.print("- debug [error text]")
-            continue
+        if cmd in self.commands:
+            if not arg:
+                return f"'{cmd}' requires an argument."
 
-        messages.append({"role": "user", "content": user_input})
+            return self.commands[cmd](arg)
 
-        response = chat_with_memory(messages)
+        return None  # Not a command
 
-        messages.append({"role": "assistant", "content": response})
+    # ---------------------------
+    # Interactive Chat
+    # ---------------------------
+    def interactive_chat(self):
+        self.console.print("[bold cyan]DevAssist Interactive Mode[/bold cyan]")
+        self.console.print("Type 'exit' to quit.\n")
 
-        console.print("[bold green]AI:[/bold green]", response)
+        while True:
+            user_input = input("You: ")
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="DevAssist CLI - AI Developer Assistant"
-    )
+            if user_input.lower() == "exit":
+                self.console.print("[bold magenta]Goodbye![/bold magenta]")
+                break
 
-    parser.add_argument("--explain", type=str, help="Explain a file")
-    parser.add_argument("--refactor", type=str, help="Refactor a file")
-    parser.add_argument("--generate", type=str, help="Generate a function")
-    parser.add_argument("--debug", type=str, help="Explain an error")
-    parser.add_argument("--chat", action="store_true", help="Interactive chat mode.")
+            if user_input.lower() == "commands":
+                self.show_commands()
+                continue
 
-    args = parser.parse_args()
+            # 🔥 Check if it's a command first
+            command_result = self.handle_command(user_input)
 
-    if args.explain:
-        result = explain_file(args.explain)
-        console.print("[bold green]Explanation:[/bold green]")
-        console.print(result)
+            if command_result:
+                self.console.print("[bold yellow]Command Output:[/bold yellow]")
+                self.console.print(command_result)
+                continue
 
-    elif args.refactor:
-        result = refactor_file(args.refactor)
-        console.print("[bold blue]Refactored Code:[/bold blue]")
-        console.print(result)
+            # Otherwise → AI chat
+            self.messages.append({"role": "user", "content": user_input})
+            response = chat_with_memory(self.messages)
+            self.messages.append({"role": "assistant", "content": response})
 
-    elif args.generate:
-        result = generate_function(args.generate)
-        console.print("[bold yellow]Generated Function:[/bold yellow]")
-        console.print(result)
+            self.console.print("[bold green]AI:[/bold green]", response)
 
-    elif args.debug:
-        result = debug_error(args.debug)
-        console.print("[bold red]Debug Analysis:[/bold red]")
-        console.print(result)
+    # ---------------------------
+    # CLI Mode
+    # ---------------------------
+    def run_cli(self):
+        parser = argparse.ArgumentParser(
+            description="DevAssist CLI - AI Developer Assistant"
+        )
 
-    elif args.chat:
-        interactive_chat()
+        parser.add_argument("--explain", type=str)
+        parser.add_argument("--refactor", type=str)
+        parser.add_argument("--generate", type=str)
+        parser.add_argument("--debug", type=str)
+        parser.add_argument("--chat", action="store_true")
 
-    else:
-        parser.print_help()
+        args = parser.parse_args()
 
+        # Map CLI args → command names
+        cli_map = {
+            "explain": args.explain,
+            "refactor": args.refactor,
+            "generate": args.generate,
+            "debug": args.debug,
+        }
+
+        for cmd, value in cli_map.items():
+            if value:
+                result = self.commands[cmd](value)
+                self.console.print(f"[bold green]{cmd.capitalize()} Result:[/bold green]")
+                self.console.print(result)
+                return
+
+        if args.chat:
+            self.interactive_chat()
+        else:
+            parser.print_help()
+
+    # ---------------------------
+    # Utility
+    # ---------------------------
+    def show_commands(self):
+        self.console.print("[bold yellow]Available Commands:[/bold yellow]")
+        for cmd in self.commands:
+            self.console.print(f"- {cmd} [argument]")
+
+
+# Entry point
 if __name__ == "__main__":
-    main()
+    app = DevAssist()
+    app.run_cli()

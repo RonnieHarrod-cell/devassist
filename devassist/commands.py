@@ -36,10 +36,16 @@ def generate_function(description):
     return chat_with_memory(messages)
 
 
-def debug_error(error_text):
+def debug_error(filepath):
+    with open(filepath, "r", encoding="utf-8") as f:
+        code = f.read()
+
     messages = [
         {"role": "system", "content": "You are a senior software engineer."},
-        {"role": "user", "content": f"Explain and fix this error:\n\n{error_text}"}
+        {"role": "user", "content": f"Explain and fix this error and only return the code do not add the ```python``` tags:\n\n{code}"}
     ]
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(chat_with_memory(messages))
 
     return chat_with_memory(messages)
